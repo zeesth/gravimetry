@@ -61,6 +61,7 @@ def plots(obs_x, obs_y, grav_z, sph_x, sph_y, sph_z, size):
     zlabel="Gz (mGal)",
     title="Gz in function of x and y")
     delta_gz.plot_surface(obs_x/1000, obs_y/1000, grav_z, cmap="viridis")
+    delta_gz.view_init(azim=230)
 
     sp_sph = fig.add_subplot(1, 2, 2, projection="3d",
     xlim=lim,
@@ -72,6 +73,7 @@ def plots(obs_x, obs_y, grav_z, sph_x, sph_y, sph_z, size):
     aspect="equal",
     title="Sphere Projection")
     sp_sph.plot_surface(sph_x/1000, sph_y/1000, sph_z/1000, cmap="viridis")
+    sp_sph.view_init(azim=230)
 
     plt.show()
 
