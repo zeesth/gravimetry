@@ -30,6 +30,16 @@ def grav_component(mass, rx, ry, rz, r3):
 
     return grav_x, grav_y, grav_z
 
+def main():
+    size, x, y, z, rad, rho = user_input()
+    obs_x, obs_y, obs_z = observator(size)
+    rx, ry, rz, r3 = distance(obs_x, obs_y, obs_z, x, y, z)
+    mass = calc_mass(rad, rho)
+    grav_x, grav_y, grav_z = grav_component(mass, rx, ry, rz, r3)
+    sph_x, sph_y, sph_z = sphere_card(rad, x, y, z)
+
+    plots(obs_x, obs_y, grav_z, sph_x, sph_y, sph_z, size)
+
 def observator(length):
     obs_x = np.arange(start=0, stop=length+1, step=10, dtype=float)
     obs_y = np.arange(start=0, stop=length+1, step=10, dtype=float)
@@ -39,21 +49,6 @@ def observator(length):
     obs_z = np.zeros_like(obs_x)
 
     return obs_x, obs_y, obs_z
-
-def sphere_card(radius, sph_x, sph_y, sph_z):
-    theta = np.linspace(0, 2 * np.pi, 100)
-    phi = np.linspace(0, np.pi, 50)
-    phi, theta = np.meshgrid(theta, phi)
-
-    card_x = radius * np.sin(theta) * np.cos(phi)
-    card_y = radius * np.sin(theta) * np.sin(phi)
-    card_z = radius * np.cos(theta)
-
-    card_x += sph_x
-    card_y += sph_y
-    card_z += sph_z
-
-    return card_x, card_y, card_z
 
 def plots(obs_x, obs_y, grav_z, sph_x, sph_y, sph_z, size):
     lim = [0, size/1000]
@@ -80,6 +75,21 @@ def plots(obs_x, obs_y, grav_z, sph_x, sph_y, sph_z, size):
 
     plt.show()
 
+def sphere_card(radius, sph_x, sph_y, sph_z):
+    theta = np.linspace(0, 2 * np.pi, 100)
+    phi = np.linspace(0, np.pi, 50)
+    phi, theta = np.meshgrid(theta, phi)
+
+    card_x = radius * np.sin(theta) * np.cos(phi)
+    card_y = radius * np.sin(theta) * np.sin(phi)
+    card_z = radius * np.cos(theta)
+
+    card_x += sph_x
+    card_y += sph_y
+    card_z += sph_z
+
+    return card_x, card_y, card_z
+
 def user_input():
     size = 1000 * float(input("Grid size (km): "))
     x = 1000 * float(input("Sphere's x (km): "))
@@ -90,27 +100,4 @@ def user_input():
     
     return size, x, y, z, rad, rho
 
-def main(debug=False):
-    if debug:
-        size = 12000
-        x = 7000
-        y = 6000
-        z = 5000
-        rad = 777
-        rho = 16
-    else:
-        size, x, y, z, rad, rho = user_input()
-    
-    obs_x, obs_y, obs_z = observator(size)
-
-    rx, ry, rz, r3 = distance(obs_x, obs_y, obs_z, x, y, z)
-
-    mass = calc_mass(rad, rho)
-
-    grav_x, grav_y, grav_z = grav_component(mass, rx, ry, rz, r3)
-
-    sph_x, sph_y, sph_z = sphere_card(rad, x, y, z)
-
-    plots(obs_x, obs_y, grav_z, sph_x, sph_y, sph_z, size)
-    
-main(True)
+main()
