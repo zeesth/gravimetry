@@ -4,14 +4,15 @@ import numpy as np
 ISIGN = np.array([-1, 1])
 G = 6.67e-11
 
-def distance(obs_x, obs_y, P):
+def distance(obs_x, obs_y, params):
     obs_z = np.zeros(1)
-    rx1 = obs_x - P[0]
-    ry1 = obs_y - P[1]
-    rz1 = obs_z - P[2]
-    rx2 = obs_x - P[3]
-    ry2 = obs_y - P[4]
-    rz2 = obs_z - P[5]
+
+    rx1 = obs_x - params[0]
+    ry1 = obs_y - params[1]
+    rz1 = obs_z - params[2]
+    rx2 = obs_x - params[3]
+    ry2 = obs_y - params[4]
+    rz2 = obs_z - params[5]
 
     x = [rx1, rx2]
     y = [ry1, ry2]
@@ -26,10 +27,9 @@ def grav_component(rho, x, y, z):
         for j in range(2):
             for k in range(2):
                 vertex_r = np.sqrt(x[i]**2 + y[j]**2 + z[k]**2)
-
                 ijk = ISIGN[i] * ISIGN[j] * ISIGN[k]
-
                 arg1 = np.arctan2((x[i]*y[j]), (z[k]*vertex_r))
+
                 if np.any(arg1 < 0):
                     arg1[arg1 < 0] += 2*(np.pi)
 
@@ -61,14 +61,9 @@ def init(bodies, size):
     rho_t = []
 
     for n in range(bodies):
-        if n != 0:
-            temp_xyz, temp_rho = user_input(n+1)
-            param_t.append(temp_xyz)
-            rho_t.append(temp_rho)
-        else:
-            temp_xyz, temp_rho = user_input(n+1)
-            param_t.append(temp_xyz)
-            rho_t.append(temp_rho)
+        temp_xyz, temp_rho = user_input(n+1)
+        param_t.append(temp_xyz)
+        rho_t.append(temp_rho)
     
     obs_x = np.arange(start=0, stop=(size+1), step=10, dtype=float)
     obs_y = np.arange(start=0, stop=(size+1), step=10, dtype=float)
@@ -125,7 +120,9 @@ def user_input(n=1):
     z2 = 1000 * float(input(f"Prism number {n} z2 (km): "))
     rho = float(input(f"Prism number {n} density (kg/m³): "))
 
-    params = [x1, y1, z1, x2, y2, z2]
+    z = sorted([z1, z2])
+
+    params = [x1, y1, z[0], x2, y2, z[1]]
     
     return params, rho
 
