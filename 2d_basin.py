@@ -47,8 +47,8 @@ def grav_component(rho, x, y, z):
     return gravz
 
 def main():
-    size = 1000 * 20 #float(input("Grid size (km): "))
-    bodies = 10 #int(input("How many prisms do you want to plot? "))
+    size = 1000 * float(input("Grid size (km): "))
+    bodies = int(input("How many prisms do you want to plot? "))
 
     obs_x, param_t, rho_t = init(bodies, size)
 
