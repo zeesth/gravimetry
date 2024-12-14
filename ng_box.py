@@ -7,6 +7,7 @@ G = 6.67e-11
 def distance(obs_x, obs_y, params):
     obs_z = np.zeros(1)
 
+    ## Calculates the distance between the observator and each vertex
     rx1 = obs_x - params[0]
     ry1 = obs_y - params[1]
     rz1 = obs_z - params[2]
@@ -26,8 +27,12 @@ def grav_component(rho, x, y, z):
     for i in range(2):
         for j in range(2):
             for k in range(2):
+                ## Calculates the vector module of the distance from the observer to a prism vertex
                 vertex_r = np.sqrt(x[i]**2 + y[j]**2 + z[k]**2)
+
+                ## Adjusts the sign for each vertex of the prism
                 ijk = ISIGN[i] * ISIGN[j] * ISIGN[k]
+
                 arg1 = np.arctan2((x[i]*y[j]), (z[k]*vertex_r))
 
                 if np.any(arg1 < 0):
@@ -44,6 +49,22 @@ def grav_component(rho, x, y, z):
 
     return gravz
 
+def init(bodies, size):
+    param_t = []
+    rho_t = []
+
+    for n in range(bodies):
+        temp_xyz, temp_rho = user_input(n+1)
+        param_t.append(temp_xyz)
+        rho_t.append(temp_rho)
+    
+    ## Observator coordinates in meters where each plane is a vector.
+    obs_x = np.arange(start=0, stop=(size+1), step=10, dtype=float)
+    obs_y = np.arange(start=0, stop=(size+1), step=10, dtype=float)
+    obs_x, obs_y = np.meshgrid(obs_x, obs_y)
+
+    return obs_x, obs_y, param_t, rho_t
+
 def main():
     size = 1000 * float(input("Grid size (km): "))
     bodies = int(input("How many bodies do you want to plot? "))
@@ -55,21 +76,6 @@ def main():
     grav_sum = sum(grav_t)
 
     plots(bodies, obs_x, obs_y, grav_sum, grav_t)
-
-def init(bodies, size):
-    param_t = []
-    rho_t = []
-
-    for n in range(bodies):
-        temp_xyz, temp_rho = user_input(n+1)
-        param_t.append(temp_xyz)
-        rho_t.append(temp_rho)
-    
-    obs_x = np.arange(start=0, stop=(size+1), step=10, dtype=float)
-    obs_y = np.arange(start=0, stop=(size+1), step=10, dtype=float)
-    obs_x, obs_y = np.meshgrid(obs_x, obs_y)
-
-    return obs_x, obs_y, param_t, rho_t
 
 def multi(bodies, param_t, rho_t, obs_x, obs_y):
     param_x = []
@@ -120,6 +126,7 @@ def user_input(n=1):
     z2 = 1000 * float(input(f"Prism number {n} z2 (km): "))
     rho = float(input(f"Prism number {n} density (kg/m³): "))
 
+    ## Sorts z parameters to compensate depth perspective
     z = sorted([z1, z2])
 
     params = [x1, y1, z[0], x2, y2, z[1]]
