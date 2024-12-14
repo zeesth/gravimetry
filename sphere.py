@@ -10,23 +10,22 @@ def calc_mass(radius, rho):
     return mass
 
 def distance(obs_x, obs_y, obs_z, sph_x, sph_y, sph_z):
+    ## Calculates the distance between the observator and the sphere in each plane
     rx = obs_x - sph_x
     ry = obs_y - sph_y
     rz = obs_z - sph_z
 
+    ## Calculates the vector module of the distance
     r = np.sqrt(rx**2 + ry**2 + rz**2)
     r3 = r**3
 
     return rx, ry, rz, r3
 
 def grav_component(mass, rx, ry, rz, r3):
-    grav_x = -G * mass * rx / r3
-    grav_y = -G * mass * ry / r3
-    grav_z = -G * mass * rz / r3
-
-    grav_x = grav_x * 1e8
-    grav_y = grav_y * 1e8
-    grav_z = grav_z * 1e8
+    ## Calculates each axis' gravitational component
+    grav_x = (-G * mass * rx / r3) * 1e8
+    grav_y = (-G * mass * ry / r3) * 1e8
+    grav_z = (-G * mass * rz / r3) * 1e8
 
     return grav_x, grav_y, grav_z
 
@@ -41,6 +40,7 @@ def main():
     plots(obs_x, obs_y, grav_z, sph_x, sph_y, sph_z, size)
 
 def observator(length):
+    ## Observator coordinates in meters where each plane is a vector.
     obs_x = np.arange(start=0, stop=length+1, step=10, dtype=float)
     obs_y = np.arange(start=0, stop=length+1, step=10, dtype=float)
 
@@ -80,7 +80,7 @@ def plots(obs_x, obs_y, grav_z, sph_x, sph_y, sph_z, size):
 def sphere_card(radius, sph_x, sph_y, sph_z):
     theta = np.linspace(0, 2 * np.pi, 100)
     phi = np.linspace(0, np.pi, 50)
-    phi, theta = np.meshgrid(theta, phi)
+    phi, theta = np.meshgrid(phi, theta)
 
     card_x = radius * np.sin(theta) * np.cos(phi)
     card_y = radius * np.sin(theta) * np.sin(phi)
