@@ -7,7 +7,8 @@ G = 6.67e-11
 def distance(obs_x, params):
     obs_y = np.zeros_like(obs_x)
     obs_z = np.zeros_like(obs_x)
-
+    
+    ## Calculates the distance between the observator and each vertex
     rx1 = obs_x - params[0]
     ry1 = obs_y - 1
     rz1 = obs_z - 1
@@ -27,8 +28,10 @@ def grav_component(rho, x, y, z):
     for i in range(2):
         for j in range(2):
             for k in range(2):
+                ## Calculates the vector module of the distance from the observer to a prism vertex
                 vertex_r = np.sqrt(x[i]**2 + y[j]**2 + z[k]**2)
 
+                ## Adjusts the sign for each vertex of the prism
                 ijk = ISIGN[i] * ISIGN[j] * ISIGN[k]
 
                 arg1 = np.arctan2((x[i]*y[j]), (z[k]*vertex_r))
